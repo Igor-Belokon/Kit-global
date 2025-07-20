@@ -1,29 +1,37 @@
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
+const defaultPosts = [
+  {
+    id: '11958c9b-7d86-43e2-a543-479fe5910413',
+    title: 'First blog',
+    content: 'my first blog',
+    comments: ['first comment', 'second comment'],
+  },
+  {
+    id: '11958c9b-7d86-43e2-a543-479fe5910414',
+    title: 'Second blog',
+    content: 'my second blog',
+    comments: ['first comment', 'second comment'],
+  },
+];
+
 export const seedInitialPosts = async () => {
-  const postsCol = collection(db, "posts");
-  const existing = await getDocs(postsCol);
+  const postsRef = collection(db, "posts");
+  const snapshot = await getDocs(postsRef);
 
-  // Только если база пуста
-  if (existing.empty) {
-    const samplePosts = [
-      {
-        title: "Добро пожаловать в блог",
-        content: "Это наш первый пост в блоге. Здесь будет публиковаться интересный контент.",
-      },
-      {
-        title: "Как использовать наш блог",
-        content: "Вы можете создавать и редактировать посты с помощью простой формы на сайте.",
-      },
-    ];
-
-    for (const post of samplePosts) {
-      await addDoc(postsCol, post);
+  if (snapshot.empty) {
+    console.log("[seed] No posts found. Seeding default posts...");
+    for (const post of defaultPosts) {
+      const postRef = doc(db, "posts", post.id); // задаём ID вручную
+      await setDoc(postRef, {
+        title: post.title,
+        content: post.content,
+        comments: post.comments,
+      });
     }
-
-    console.log("📘 Начальные посты добавлены в Firestore.");
+    console.log("[seed] Seeding completed.");
   } else {
-    console.log("✅ Firestore уже содержит посты — пропущено.");
+    console.log("[seed] Posts already exist. Skipping seed.");
   }
 };

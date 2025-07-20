@@ -1,11 +1,18 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  apiKey: 'AIzaSyCINWB_VLhfm-ix0QQEyGwkdZNt4s9M4jE',
+  authDomain: 'kit-global-eb5b3.firebaseapp.com',
+  projectId: 'kit-global-eb5b3',
+  storageBucket: 'kit-global-eb5b3.appspot.com',
+  messagingSenderId: '707791263608',
+  appId: '1:707791263608:web:fa0e7274728618ae899a8d',
+  measurementId: 'G-HMF51LT15V',
 };
 
-const app = initializeApp(firebaseConfig);
+// Чтобы избежать ошибки повторной инициализации в Next.js
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+// Инициализация Firestore
 export const db = getFirestore(app);

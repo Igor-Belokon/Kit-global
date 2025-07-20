@@ -1,9 +1,14 @@
 'use client';
-import { useState } from 'react';
-import { Button } from '@mui/material';
+import { useState, FC } from 'react';
+import { Button, Stack, Typography } from '@mui/material';
 import AddModalForm from '@/app/modalForms/AddModalForm';
+import Link from 'next/link';
 
-export const Header = () => {
+interface HeaderArg {
+  pageName: string;
+}
+
+const Header: FC<HeaderArg> = ({ pageName }) => {
   const [openAddForm, setOpenAddForm] = useState(false);
 
   function handleOpen() {
@@ -11,9 +16,25 @@ export const Header = () => {
   }
 
   return (
-    <div className="grid gap-4">
-      <Button onClick={handleOpen}>Add Blog</Button>
+    <Stack
+      sx={{ width: '100%', height: '40px', bgcolor: '#cccccc' }}
+      direction="row"
+      alignItems="center"
+      justifyContent="space-around"
+    >
+      <Button
+        onClick={handleOpen}
+        sx={{ bgcolor: '#f89406', color: '#333333', fontWeight: 'bold' }}
+      >
+        Add Post
+      </Button>
+      <Link href={'/'} passHref>
+        <Typography>KIT-GLOBAL</Typography>
+      </Link>
+      <Typography>{pageName}</Typography>
       <AddModalForm open={openAddForm} funcStatus={handleOpen} />
-    </div>
+    </Stack>
   );
 };
+
+export default Header;

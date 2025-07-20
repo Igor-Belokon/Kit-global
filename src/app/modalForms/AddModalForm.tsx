@@ -1,3 +1,4 @@
+'use client';
 import {
   Box,
   Modal,
@@ -6,43 +7,53 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { FC, useState, ChangeEvent } from 'react';
-import { z } from 'zod';
+import { FC } from 'react';
 import { useAppDispatch } from '@/app/store/hooks';
-import { createPost } from '@/app/store/postsSlice';
+import { createPost, Post } from '@/app/store/postsSlice';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface ModalArgs {
   open: boolean;
   funcStatus: () => void;
 }
+
 const schema = z.object({
-  title: z.string().min(3),
-  excerpt: z.string().min(5),
-  content: z.string().min(10),
+  title: z.string().min(3, 'Min 3 symbols'),
+  content: z.string().min(10, 'Min 10 symbols'),
 });
 
 type FormData = z.infer<typeof schema>;
 
 const AddModalForm: FC<ModalArgs> = ({ open, funcStatus }) => {
   const dispatch = useAppDispatch();
-  const [newPost, setNewPost] = useState<FormData>({
-    title: '',
-    excerpt: '',
-    content: '',
+  const {
+    register,
+    formState: { errors },
+    getValues,
+    trigger,
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
-  const onSubmit = () => {
-    if (newPost) {
-      dispatch(createPost(newPost));
-      funcStatus();
-    }
-  };
+  const onSubmit = async () => {
+    const isValid = await trigger();
+    if (!isValid) return;
 
-  function changeTitle(event: ChangeEvent<HTMLInputElement>) {
-    const post = Object.assign({}, newPost);
-    post.title = event.target.value;
-    setNewPost(post);
-  }
+    const data = getValues();
+
+    const post: Omit<Post, 'id'> = {
+      title: data.title,
+      content: data.content,
+      comments: [],
+    };
+
+    dispatch(createPost(post));
+    reset();
+    funcStatus();
+  };
 
   return (
     <Modal
@@ -65,7 +76,7 @@ const AddModalForm: FC<ModalArgs> = ({ open, funcStatus }) => {
           sx={{
             bgcolor: 'primary.contrastText',
             padding: '20px',
-            height: '250px',
+            height: '40%',
             border: 'solid 1px ',
             borderColor: 'divider',
             alignItems: 'center',
@@ -78,22 +89,30 @@ const AddModalForm: FC<ModalArgs> = ({ open, funcStatus }) => {
             </Typography>
             <Button onClick={funcStatus}>close</Button>
           </Stack>
-          <TextField onChange={changeTitle} />
+          <Typography>Wright title</Typography>
+          <TextField
+            {...register('title')}
+            error={!!errors.title?.message}
+            helperText={errors.title?.message || ''}
+          />
+          <Typography>Wright Content</Typography>
+          <TextField
+            {...register('content')}
+            error={!!errors.content?.message}
+            helperText={errors.content?.message || ''}
+          />
           <Stack direction="row" justifyContent="end">
             <Button
               onClick={onSubmit}
               sx={{
                 maxHeight: '30px',
                 width: '75px',
-                bgcolor: 'warning.main',
-                border: '1px solid',
-                borderColor: 'rareColors.dark',
-                color: 'secondColors.light',
+                border: '1px solid black',
                 fontWeight: 'bold',
                 fontSize: '14px',
               }}
             >
-              Ok
+              Add post
             </Button>
           </Stack>
         </Box>

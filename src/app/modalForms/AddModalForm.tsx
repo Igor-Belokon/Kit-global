@@ -76,18 +76,33 @@ const AddModalForm: FC<ModalArgs> = ({ open, funcStatus }) => {
           sx={{
             bgcolor: 'primary.contrastText',
             padding: '20px',
-            height: '40%',
+            height: '45%',
             border: 'solid 1px ',
             borderColor: 'divider',
             alignItems: 'center',
             borderRadius: '2px',
           }}
         >
-          <Stack direction="row">
-            <Typography sx={{ marginBottom: '30px', fontSize: '15px' }}>
+          <Stack
+            direction="row"
+            alignContent="center"
+            marginBottom="15px"
+            justifyContent="space-between"
+          >
+            <Typography sx={{ fontSize: '15px' }} alignContent="center">
               Add Post
             </Typography>
-            <Button onClick={funcStatus}>close</Button>
+            <Button
+              onClick={funcStatus}
+              sx={{
+                color: '#333333',
+                fontWeight: 'bold',
+                maxWidth: '70px',
+                maxHeight: '30px',
+              }}
+            >
+              close
+            </Button>
           </Stack>
           <Typography>Wright title</Typography>
           <TextField
@@ -101,15 +116,15 @@ const AddModalForm: FC<ModalArgs> = ({ open, funcStatus }) => {
             error={!!errors.content?.message}
             helperText={errors.content?.message || ''}
           />
-          <Stack direction="row" justifyContent="end">
+          <Stack direction="row" justifyContent="end" marginTop="10px">
             <Button
               onClick={onSubmit}
               sx={{
-                maxHeight: '30px',
-                width: '75px',
-                border: '1px solid black',
+                bgcolor: '#f89406',
+                color: '#333333',
                 fontWeight: 'bold',
-                fontSize: '14px',
+                maxWidth: '100px',
+                maxHeight: '30px',
               }}
             >
               Add post

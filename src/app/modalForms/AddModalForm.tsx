@@ -17,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 interface ModalArgs {
   open: boolean;
   funcStatus: () => void;
+  same: boolean;
 }
 
 const schema = z.object({
@@ -26,7 +27,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const AddModalForm: FC<ModalArgs> = ({ open, funcStatus }) => {
+const AddModalForm: FC<ModalArgs> = ({ open, funcStatus  }) => {
   const dispatch = useAppDispatch();
   const {
     register,
